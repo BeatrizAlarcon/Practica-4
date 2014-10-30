@@ -137,5 +137,69 @@ describe("Clase PlayerShip", function(){
 
     });
 
+
+	it("step nueva funcionalidad disparo", function(){
+	Game = {
+		width: 320, 
+		height: 480, 
+		keys: {'fire': true}
+	};
+		// Creamos un PlayerShip para testar
+	var miNave = new PlayerShip();
+
+	//tablero test
+	var gameBoard = {
+		add: function() {}
+	};
+
+	miNave.board = gameBoard;
+
+	spyOn(gameBoard, "add");
+
+ 	Game.keys['fire']=false;
+ 	miNave.reload=-1;
+ 	miNave.step(0.5); 
+	//la primera vez que se pulsa se añade disparo
+	gameBoard.add.reset();
+	Game.keys['fire']=true;
+	miNave.reload=-5;
+ 	miNave.step(1); 	
+ 	expect(gameBoard.add).toHaveBeenCalled();
+
+ 	//al soltar
+ 	gameBoard.add.reset();
+
+ 	Game.keys['fire']=false;
+	miNave.reload=-1;
+ 	miNave.step(0.5); 	
+ 	expect(gameBoard.add).not.toHaveBeenCalled();
+
+ 	//al volver a pulsar
+ 	Game.keys['fire']=true;
+	miNave.reload=-1;
+ 	miNave.step(0.5); 	
+ 	expect(gameBoard.add).toHaveBeenCalled();
+
+ 	//manteniendo pulsado, no se añade disparo
+ 	for(i=0; i<10; i++){
+ 			//elimino el estado
+ 			gameBoard.add.reset();
+ 			miNave.reload=-1;
+ 			miNave.step(0.5);
+ 			expect(gameBoard.add).not.toHaveBeenCalled();
+ 	}
+
+ 	Game.keys['fire']=false;
+ 	miNave.reload=-1;
+ 	miNave.step(0.5); 
+
+ 	//al volver a pulsar
+ 	gameBoard.add.reset();
+ 	Game.keys['fire']=true;
+	miNave.reload=-1;
+ 	miNave.step(0.5); 
+ 	expect(gameBoard.add).toHaveBeenCalled();
+	});
+
 });
 
