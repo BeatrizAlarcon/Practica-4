@@ -5,7 +5,8 @@ var sprites = {
     enemy_bee: { sx: 79, sy: 0, w: 37, h: 43, frames: 1 },
     enemy_ship: { sx: 116, sy: 0, w: 42, h: 43, frames: 1 },
     enemy_circle: { sx: 158, sy: 0, w: 32, h: 33, frames: 1 },
-    explosion: { sx: 0, sy: 64, w: 64, h: 64, frames: 12 }
+    explosion: { sx: 0, sy: 64, w: 64, h: 64, frames: 12 },
+    fireball: {sx: 0, sy: 64, w: 64, h: 64, frames: 1}
 };
 
 
@@ -192,10 +193,10 @@ PlayerMissile.prototype.step = function(dt)  {
     this.y += this.vy * dt;
     var collision = this.board.collide(this,OBJECT_ENEMY);
     if(collision) {
-	collision.hit(this.damage);
-	this.board.remove(this);
+	   collision.hit(this.damage);
+	   this.board.remove(this);
     } else if(this.y < -this.h) { 
-	this.board.remove(this); 
+	   this.board.remove(this); 
     }
 };
 
@@ -321,7 +322,7 @@ Explosion.prototype.step = function(dt) {
 // forma solo existe una copia de cada uno para todos los misiles, y
 // no una copia para cada objeto misil
 var FireBall = function(x,y,dir) {
-    this.setup ('explosion',{})
+    this.setup ('fireball',{damage: 1000})
     //this.w = SpriteSheet.map['explosion'].w;
     //this.h = SpriteSheet.map['explosion'].h;
     this.x = x - this.w/4; //4 reducir la imagen
@@ -350,7 +351,12 @@ FireBall.prototype.step = function(dt)  {
 
     this.vy += 100; // velocidad de caida
 
-    if(this.y > Game.height 
+    var collision = this.board.collide(this,OBJECT_ENEMY);
+
+    if(collision) {
+        collision.hit(this.damage);
+        //this.board.remove(this);
+    } else if(this.y > Game.height 
         || this.x < -this.w 
         || this.x > Game.width) {
         this.board.remove(this);
