@@ -22,33 +22,42 @@ var canvas, ctx;
   it("FireBall", function(){
     //preparo el SpriteSheet necesario
     SpriteSheet.map = {
-      missile: {w:2, h:10} 
+      explosion: {w:20, h:10} 
     };
     //compruebo para los parámetros concretos, es más util hacerlo más genérico
-    var playerMissile = new PlayerMissile(10,10);
-    expect(playerMissile.w).toBe(2);
-    expect(playerMissile.h).toBe(10);
-    expect(playerMissile.x).toBe(9);
-    expect(playerMissile.y).toBe(0);
-    expect(playerMissile.vy).toBe(-700);
+    var fireBall1 = new FireBall(10,10,"izq");
+    expect(fireBall1.w).toBe(20);
+    expect(fireBall1.h).toBe(10);
+    expect(fireBall1.x).toBe(10-20/4);
+    expect(fireBall1.y).toBe(10-10/2);
+    expect(fireBall1.vy).toBe(-750);
+    expect(fireBall1.vx).toBe(200);
+
+    var fireBall2 = new FireBall(10,10,"dch");
+    expect(fireBall2.w).toBe(20);
+    expect(fireBall2.h).toBe(10);
+    expect(fireBall2.x).toBe(10-20/4);
+    expect(fireBall2.y).toBe(10-10/2);
+    expect(fireBall2.vy).toBe(-750);
+    expect(fireBall2.vx).toBe(-200);
   });
 
   it("FireBall.step",function(){
     SpriteSheet.map = {
-      missile: {w:2, h:10} 
+      explosion: {w:20, h:10} 
     };
-    var playerMissile = new PlayerMissile(10,10);
+    var fireBall = new FireBall(10,10,"izq");
     var gameBoard = {remove: function(x){}};
     spyOn(gameBoard, "remove");
 
-    playerMissile.board = gameBoard;
+    fireBall.board = gameBoard;
 
-    //0<-10 =>no llama a remove
-    playerMissile.step(0);
+    //no llama a remove
+    fireBall.step(0);
     expect(gameBoard.remove).not.toHaveBeenCalled();
-    //(-700*1)<-10 =>no llama a remove
-    playerMissile.step(1);
-    expect(gameBoard.remove).toHaveBeenCalledWith(playerMissile);
+    //llama a remove
+    fireBall.step(-1000000000000000000);
+    expect(gameBoard.remove).toHaveBeenCalledWith(fireBall);
 
   });
 
@@ -57,14 +66,14 @@ var canvas, ctx;
       draw: function(a, b, c, d){}
     };
     SpriteSheet.map = {
-      missile: {w:2, h:10} 
+      explosion: {w:20, h:10} 
     };
     ctx ={};
-    var playerMissile = new PlayerMissile(10,20);
+    var fireBall = new FireBall(10,20);
     spyOn(SpriteSheet, "draw");
 
-    playerMissile.draw(ctx);
-    expect(SpriteSheet.draw).toHaveBeenCalledWith(ctx,'missile',playerMissile.x, playerMissile.y)
+    fireBall.draw(ctx);
+    expect(SpriteSheet.draw).toHaveBeenCalledWith(ctx,'explosion',fireBall.x, fireBall.y)
   });
 
 
