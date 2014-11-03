@@ -84,3 +84,105 @@
     jugador, desaparece también.
 
 */
+describe("Collision", function(){
+
+
+var canvas, ctx;
+
+  beforeEach(function(){
+    loadFixtures('index.html');
+
+    canvas = $('#game')[0];
+    expect(canvas).toExist();
+
+    ctx = canvas.getContext('2d');
+    expect(ctx).toBeDefined();
+ 
+    oldGame = Game;
+  });
+
+  afterEach(function(){
+    Game = oldGame;
+  }); 
+
+  it("misil colisiona enemigo", function(){
+    SpriteSheet.map ={
+      ship: { sx: 0, sy: 0, w: 37, h: 42, frames: 1 },
+      missile: { sx: 0, sy: 30, w: 2, h: 10, frames: 1 },
+      enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 },
+      explosion: { sx: 0, sy: 64, w: 64, h: 64, frames: 12 },
+    };
+    var gameBoard = new GameBoard();
+    basics = { x: 100, y: -50, sprite: 'enemy_purple', B: 100, C: 2 , E: 100};
+    var myenemy = new Enemy(basics);
+    var mymissile = new PlayerMissile(10,20);
+    mymissile.damage = 200;
+
+    gameBoard.add(myenemy);
+    gameBoard.add(mymissile);
+
+    gameBoard.step(100);
+
+    expect(gameBoard.objects.length).toBe(0);   
+
+
+  });
+
+  it("bola de fuego colisiona enemigo",function(){
+    SpriteSheet.map ={
+      ship: { sx: 0, sy: 0, w: 37, h: 42, frames: 1 },
+      enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 },
+      explosion: { sx: 0, sy: 64, w: 64, h: 64, frames: 12 },
+      fireball: {sx: 0, sy: 64, w: 64, h: 64, frames: 1}
+    };
+    var gameBoard = new GameBoard();
+    basics = { x: 100, y: -50, sprite: 'enemy_purple', B: 0, C: 2 , E: 100};
+    var fireBall = new FireBall(100, 100, "dch");
+
+    fireBall.x=100;
+    fireBall.y=200;
+    fireBall.vx=0;
+    fireBall.vy=0;
+    fireBall.w=0;
+    fireBall.h=0;
+   
+
+    var myenemy = new Enemy(basics);
+
+    gameBoard.add(myenemy);
+    gameBoard.add(fireBall);
+    expect(gameBoard.objects.length).toBe(2);
+
+    gameBoard.step(100);
+
+    expect(gameBoard.objects.length).toBe(1);
+    expect(gameBoard.objects[0].sprite).toEqual('fireball');
+    
+
+  });
+
+  it("nave colisiona enemigo", function(){
+    SpriteSheet.map ={
+      ship: { sx: 0, sy: 0, w: 37, h: 42, frames: 1 },
+      enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 }
+    };
+    basics = { x: 100, y: 100, sprite: 'enemy_purple', B: 100, C: 2 , E: 100 };
+    var gameBoard = new GameBoard();
+    var myenemy = new Enemy(basics);
+    var myship = new PlayerShip();
+    myship.x=100;
+    myship.y=100;
+   
+    gameBoard.add(myenemy);
+    gameBoard.add(myship);
+
+    expect(gameBoard.objects.length).toBe(2);
+    gameBoard.step(3/1000);
+
+    //al chocar se eliminan los dos objetos
+    expect(gameBoard.objects.length).toBe(0);
+    expect(gameBoard.objects[0]).toEqual(undefined);
+
+  });
+
+});
