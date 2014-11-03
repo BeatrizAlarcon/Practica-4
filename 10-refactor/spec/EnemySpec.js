@@ -60,4 +60,79 @@
      propiedades de la plantilla.
 
 */
+describe("Clase Enemy", function(){
+  
+  var canvas, ctx;
+
+  beforeEach(function(){
+    loadFixtures('index.html');
+
+    canvas = $('#game')[0];
+    expect(canvas).toExist();
+
+    ctx = canvas.getContext('2d');
+    expect(ctx).toBeDefined();
+
+    oldGame = Game;
+  });
+
+  afterEach(function(){
+    Game = oldGame;
+  }); 
+
+  it("Enemy", function(){
+    SpriteSheet.map = {
+      enemy_purple: { sx: 0, sy: 30, w: 2, h: 10, frames: 1 }
+    };
+    basics = { x: 100, y: -50, sprite: 'enemy_purple', B: 100, C: 2 , E: 100 };
+    override = {B:0, F:0};
+
+    var enemy = new Enemy(basics,override);
+
+    expect(enemy.h).toBe(10);
+    expect(enemy.w).toBe(2);
+    expect(enemy.t).toBe(0);
+
+
+  });
+
+  it("Enemy.step", function(){
+    SpriteSheet.map = {
+      enemy_purple: { sx: 0, sy: 30, w: 2, h: 10, frames: 1 }
+    };
+    basics = { x: 100, y: -50, sprite: 'enemy_purple', B: 100, C: 2 , E: 100 };
+    override = {B:0, F:0};
+    var enemy = new Enemy(basics,override);
+    var gameBoard = {remove: function(x){}};
+    spyOn(gameBoard, "remove");
+
+    enemy.board = gameBoard;
+
+    //no llama a remove
+    enemy.step(0);
+    expect(gameBoard.remove).not.toHaveBeenCalled();
+    //llama a remove
+    enemy.step(100000000);
+    expect(gameBoard.remove).toHaveBeenCalledWith(enemy);
+  });
+
+  it("Enemy.draw", function(){
+    SpriteSheet= {
+      draw: function(a, b, c, d){}
+    };
+    SpriteSheet.map = {
+      enemy_purple: { sx: 0, sy: 30, w: 2, h: 10, frames: 1 }
+    };
+    ctx ={};
+    basics = { x: 100, y: -50, sprite: 'enemy_purple', B: 100, C: 2 , E: 100 };
+    override = {B:0, F:0};
+    var enemy = new Enemy(basics,override);
+    spyOn(SpriteSheet, "draw");
+
+    enemy.draw(ctx);
+    expect(SpriteSheet.draw).toHaveBeenCalledWith(ctx,enemy.sprite,enemy.x, enemy.y, 0)
+  });
+
+});
+
 
