@@ -11,7 +11,7 @@ var canvas, ctx;
 
     ctx = canvas.getContext('2d');
     expect(ctx).toBeDefined();
-
+ 
     oldGame = Game;
   });
 
