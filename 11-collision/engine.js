@@ -31,8 +31,8 @@ var Game = new function() {
 	SpriteSheet.load(sprite_data,callback);
     };
 
-    // Gestión de la entrada (teclas para izda/derecha y disparo)
-    var KEY_CODES = { 37:'left', 39:'right', 32 :'fire' };
+        // Gestión de la entrada (teclas para izda/derecha y disparo)
+    var KEY_CODES = { 37:'left', 39:'right', 32 :'fire', 66:'firedch', 78:'fireizq'};
     this.keys = {};
 
     this.setupInput = function() {
