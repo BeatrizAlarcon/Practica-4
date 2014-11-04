@@ -164,6 +164,7 @@ var canvas, ctx;
   it("nave colisiona enemigo", function(){
     SpriteSheet.map ={
       ship: { sx: 0, sy: 0, w: 37, h: 42, frames: 1 },
+      explosion: { sx: 0, sy: 64, w: 64, h: 64, frames: 12 },
       enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 }
     };
     basics = { x: 100, y: 100, sprite: 'enemy_purple', B: 100, C: 2 , E: 100 };
@@ -180,8 +181,8 @@ var canvas, ctx;
     gameBoard.step(3/1000);
 
     //al chocar se eliminan los dos objetos
-    expect(gameBoard.objects.length).toBe(0);
-    expect(gameBoard.objects[0]).toEqual(undefined);
+    expect(gameBoard.objects.length).toBe(1);
+    expect(gameBoard.objects[0]sprite).toEqual('explosion');
 
   });
 
