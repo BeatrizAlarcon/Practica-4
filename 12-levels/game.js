@@ -79,6 +79,18 @@ var level1 = [
     [ 22000,    25000, 400,         'wiggle',   { x: 100 } ]
 ];
 
+var level2 = [
+  //  Comienzo, Fin,   Frecuencia,  Tipo,       Override
+    [ 0,        4000,  500,         'step'                 ],
+    [ 6000,     13000, 800,         'ltr'                  ],
+    [ 10000,    16000, 400,         'circle'               ],
+    [ 17800,    20000, 500,         'straight', { x: 150 } ],
+    [ 18200,    20000, 500,         'straight', { x: 9  }  ],
+    [ 18200,    20000, 800,         'straight', { x: 100 } ],
+    [ 22000,    25000, 400,         'wiggle',   { x: 50 }  ],
+    [ 22000,    25000, 800,         'wiggle',   { x: 10 }  ]
+];
+
 
 
 var playGame = function() {
@@ -86,10 +98,26 @@ var playGame = function() {
     board.add(new PlayerShip());
 
     // Se un nuevo nivel al tablero de juego, pasando la definición de
-    // nivel level1 y la función callback a la que llamar si se ha
-    // ganado el juego
-    board.add(new Level(level1, winGame));
+    // nivel level1 y la función callback a la que llamar si se ha superado el nivel
+    //board.add(new Level(level1, winGame));
+    board.add(new Level (level1, nextLevel));
     Game.setBoard(3,board);
+};
+
+var playGame2 = function() {
+    var board = new GameBoard();
+    board.add(new PlayerShip());
+
+    // Se un nuevo nivel al tablero de juego, pasando la definición de
+    // nivel level2 y la función callback a la que llamar si se ha superado el nivel
+    board.add(new Level(level2, winGame));
+    Game.setBoard(3,board);
+};
+
+var nextLevel = function() {
+Game.setBoard(3,new TitleScreen("Level 1 -- Finish",
+                        "Press fire to play level 2",
+                        playGame2));
 };
 
 // Llamada cuando han desaparecido todos los enemigos del nivel sin
