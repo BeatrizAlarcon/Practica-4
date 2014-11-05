@@ -51,3 +51,57 @@
         el nivel ni enemigos en el tablero de juegos.
 
 */
+
+describe("Levels", function(){
+
+
+var canvas, ctx;
+
+  beforeEach(function(){
+    loadFixtures('index.html');
+
+    canvas = $('#game')[0];
+    expect(canvas).toExist();
+
+    ctx = canvas.getContext('2d');
+    expect(ctx).toBeDefined();
+ 
+    oldGame = Game;
+  });
+
+  afterEach(function(){
+    Game = oldGame;
+  }); 
+
+  it("level", function(){
+    var level1 = [
+    //  Comienzo, Fin,   Frecuencia,  Tipo,       Override
+    [ 0,        4000,  500,         'step'                 ],
+    [ 6000,     13000, 800,         'ltr'                  ]
+    ];
+
+    level = new Level(level1,function(){});
+    expect(level).toBeDefined();
+    expect(level.levelData.length).toBe(level1.length);
+  });
+  it("step", function(){
+    var level1 = [
+    //  Comienzo, Fin,   Frecuencia,  Tipo,       Override
+    [ 0,        4000,  500,         'step'                 ],
+    [ 6000,     13000, 800,         'ltr'                  ]
+    ];
+
+    level = new Level(level1,function(){});
+
+    SpriteSheet.map ={
+
+    };
+
+    var gameBoard = new gameBoard();
+    
+  });
+  it("GameOver", function(){
+  });
+
+
+});
