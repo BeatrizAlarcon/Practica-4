@@ -182,7 +182,7 @@ var canvas, ctx;
 
     //al chocar se eliminan los dos objetos
     expect(gameBoard.objects.length).toBe(1);
-    expect(gameBoard.objects[0]sprite).toEqual('explosion');
+    expect(gameBoard.objects[0].sprite).toEqual('explosion');
 
   });
 
