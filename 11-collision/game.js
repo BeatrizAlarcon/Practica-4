@@ -15,6 +15,7 @@ var enemies = {
     // variable baseParameters del constructor Enemy(). Ver
     // comentarios en el código del constructor al final del fichero.
     basic: { x: 100, y: -50, sprite: 'enemy_purple', B: 100, C: 4, E: 100, health: 20 }
+
 };
 
 var OBJECT_PLAYER        =  1,
