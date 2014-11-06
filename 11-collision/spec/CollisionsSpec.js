@@ -105,7 +105,7 @@ var canvas, ctx;
     Game = oldGame;
   }); 
 
-  it("misil colisiona enemigo", function(){
+  it("misil colisiona enemigo y no explota", function(){
     SpriteSheet.map ={
       ship: { sx: 0, sy: 0, w: 37, h: 42, frames: 1 },
       missile: { sx: 0, sy: 30, w: 2, h: 10, frames: 1 },
@@ -113,22 +113,62 @@ var canvas, ctx;
       explosion: { sx: 0, sy: 64, w: 64, h: 64, frames: 12 },
     };
     var gameBoard = new GameBoard();
-    basics = { x: 100, y: -50, sprite: 'enemy_purple', B: 100, C: 2 , E: 100};
+    basics = { x: 0, y: 0, sprite: 'enemy_purple', health:200};
     var myenemy = new Enemy(basics);
-    var mymissile = new PlayerMissile(10,20);
-    mymissile.damage = 200;
+    var mymissile = new PlayerMissile(0,1);
+    mymissile.damage = 2;
+    mymissile.vy=0;    
 
-    gameBoard.add(myenemy);
     gameBoard.add(mymissile);
+    gameBoard.add(myenemy);
 
-    gameBoard.step(100);
+    //se han añadido los dos objetos
+    expect(gameBoard.objects.length).toBe(2);
+    expect(gameBoard.objects[0].sprite).toBe('missile');  
+    expect(gameBoard.objects[1].sprite).toBe('enemy_purple'); 
 
-    expect(gameBoard.objects.length).toBe(0);   
+    gameBoard.step(1);
+
+    //no ha explotado, y se ha destruido el misil
+    expect(gameBoard.objects.length).toBe(1); 
+    expect(gameBoard.objects[0].sprite).toBe('enemy_purple'); 
+    expect(gameBoard.objects[0].health).toBe(198); 
 
 
   });
 
-  it("bola de fuego colisiona enemigo",function(){
+  it("misil colisiona enemigo y explota", function(){
+    SpriteSheet.map ={
+      ship: { sx: 0, sy: 0, w: 37, h: 42, frames: 1 },
+      missile: { sx: 0, sy: 30, w: 2, h: 10, frames: 1 },
+      enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 },
+      explosion: { sx: 0, sy: 64, w: 64, h: 64, frames: 12 },
+    };
+    var gameBoard = new GameBoard();
+    basics = { x: 0, y: 0, sprite: 'enemy_purple', health:2};
+    var myenemy = new Enemy(basics);
+    var mymissile = new PlayerMissile(0,1);
+    mymissile.damage = 200;
+    mymissile.vy=0;    
+
+    gameBoard.add(mymissile);
+    gameBoard.add(myenemy);
+
+    //se han añadido los dos objetos
+    expect(gameBoard.objects.length).toBe(2);
+    expect(gameBoard.objects[0].sprite).toBe('missile');  
+    expect(gameBoard.objects[1].sprite).toBe('enemy_purple'); 
+
+    gameBoard.step(1);
+
+    //ha explotado
+    expect(gameBoard.objects.length).toBe(1); 
+    expect(gameBoard.objects[0].sprite).toBe('explosion');  
+
+
+  });
+
+  it("bola de fuego colisiona enemigo y no explota",function(){
     SpriteSheet.map ={
       ship: { sx: 0, sy: 0, w: 37, h: 42, frames: 1 },
       enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 },
@@ -136,27 +176,69 @@ var canvas, ctx;
       fireball: {sx: 0, sy: 64, w: 64, h: 64, frames: 1}
     };
     var gameBoard = new GameBoard();
-    basics = { x: 100, y: -50, sprite: 'enemy_purple', B: 0, C: 2 , E: 100};
-    var fireBall = new FireBall(100, 100, "dch");
+    basics = { x: 100, y: 200, sprite: 'enemy_purple', health:200 };
+    var fireBall = new FireBall(100, 201, "dch");
 
-    fireBall.x=100;
-    fireBall.y=200;
     fireBall.vx=0;
     fireBall.vy=0;
-    fireBall.w=0;
-    fireBall.h=0;
+    fireBall.damage=2;
    
 
     var myenemy = new Enemy(basics);
 
     gameBoard.add(myenemy);
     gameBoard.add(fireBall);
+
+    //se ha añadido los dos objetos
     expect(gameBoard.objects.length).toBe(2);
+    expect(gameBoard.objects[0].sprite).toBe('enemy_purple');
+    expect(gameBoard.objects[1].sprite).toBe('fireball');  
 
-    gameBoard.step(100);
 
-    expect(gameBoard.objects.length).toBe(1);
-    expect(gameBoard.objects[0].sprite).toEqual('fireball');
+    gameBoard.step(1);
+
+    //ha explotado y la bola de fuego sigue existiendo
+    expect(gameBoard.objects.length).toBe(2);
+    expect(gameBoard.objects[0].sprite).toBe('enemy_purple'); 
+    expect(gameBoard.objects[1].sprite).toBe('fireball'); 
+    expect(gameBoard.objects[0].health).toBe(198); 
+    
+
+  });
+
+  it("bola de fuego colisiona enemigo y explota",function(){
+    SpriteSheet.map ={
+      ship: { sx: 0, sy: 0, w: 37, h: 42, frames: 1 },
+      enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 },
+      explosion: { sx: 0, sy: 64, w: 64, h: 64, frames: 12 },
+      fireball: {sx: 0, sy: 64, w: 64, h: 64, frames: 1}
+    };
+    var gameBoard = new GameBoard();
+    basics = { x: 100, y: 200, sprite: 'enemy_purple', health:2 };
+    var fireBall = new FireBall(100, 201, "dch");
+
+    fireBall.vx=0;
+    fireBall.vy=0;
+    fireBall.damage=200;
+   
+
+    var myenemy = new Enemy(basics);
+
+    gameBoard.add(myenemy);
+    gameBoard.add(fireBall);
+
+    //se ha añadido los dos objetos
+    expect(gameBoard.objects.length).toBe(2);
+    expect(gameBoard.objects[0].sprite).toBe('enemy_purple');
+    expect(gameBoard.objects[1].sprite).toBe('fireball');  
+
+
+    gameBoard.step(1);
+
+    //ha explotado y la bola de fuego sigue existiendo
+    expect(gameBoard.objects.length).toBe(2); 
+    expect(gameBoard.objects[0].sprite).toBe('fireball'); 
+    expect(gameBoard.objects[1].sprite).toBe('explosion'); 
     
 
   });
